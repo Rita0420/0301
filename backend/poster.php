@@ -23,8 +23,10 @@
         <div style="overflow:scroll;height:200px">
             <table>
                 <?php
-                $posters = $Posters->all();
-                foreach ($posters as $poster):
+                $posters = $Posters->all("order by `rank`");
+                foreach ($posters as $idx =>$poster):
+                    $prev=($idx-1<0)?$poster['id']:$posters[$idx-1]['id'];
+                    $next=($idx+1>=count($posters))?$poster['id']:$posters[$idx+1]['id'];
                 ?>
                     <tr>
                         <td width="25%">
@@ -34,15 +36,15 @@
                             <input type="text" name="name[]" id="name" value="<?= $poster['name']; ?>">
                         </td>
                         <td width="25%">
-                            <button type="button">往上</button>
-                            <button type="button">往下</button>
+                            <button type="button" class="sw-btn" data-id="<?=$poster['id'];?>" data-sw="<?=$prev;?>">往上</button>
+                            <button type="button" class="sw-btn" data-id="<?=$poster['id'];?>" data-sw="<?=$next;?>">往下</button>
                         </td>
                         <td width="25%">
                             <input type="checkbox" name="sh[]" id="sh" value="<?= $poster['id']; ?>" <?= ($poster['sh'] == 1) ? "checked" : ""; ?>>顯示
                             <input type="checkbox" name="del[]" id="del" value="<?= $poster['id']; ?>">刪除
                             <select name="ani[]" id="ani">
                                 <option value="1" <?= ($poster['ani'] == 1) ? "selected" : ""; ?>>淡入淡出</option>
-                                <option value="2" <?= ($poster['ani'] == 2) ? "selected" : ""; ?>>縮放</option>
+                                <option value="2" <?= ($poster['ani']== 2) ? "selected" : ""; ?>>縮放</option>
                                 <option value="3" <?= ($poster['ani'] == 3) ? "selected" : ""; ?>>滑進滑出</option>
                             </select>
                         </td>
@@ -56,8 +58,20 @@
             <input type="reset" value="重置">
         </div>
     </form>
-
 </div>
+<script>
+$(".sw-btn").on("click",function(){
+    let id=$(this).data("id");
+    let sw=$(this).data("sw");
+    console.log('ok');
+    
+    $.post("./api/sw.php",{table:'Posters',id,sw},(res)=>{
+        location.reload();
+        // console.log(res);
+        
+    })
+})
+</script>
 <hr>
 <div style="height: 160px;">
     <h3 class="ct">新增預告片海報</h3>
