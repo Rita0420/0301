@@ -147,3 +147,5 @@ class DB
         return $tmp;
     }
 }
+
+$Posters=new DB("posters");
