@@ -29,17 +29,20 @@
         font-size: 12px;
         text-align: center;
     }
-    .poster-btn{
+
+    .poster-btn {
         width: 80px;
         height: 100px;
         flex-shrink: 0;
         position: relative;
     }
-    .poster-btn img{
+
+    .poster-btn img {
         width: 70px;
         height: 90px;
         flex-shrink: 0;
     }
+
     .left,
     .right {
         width: 0;
@@ -109,18 +112,40 @@
         animater();
     }, 2000)
 
-    function animater() {
+    $(".btns").hover(
+        function() {
+            clearInterval(slider);
+        },
+        function() {
+             slider = setInterval(() => {
+                animater();
+            }, 2000)
+        }
+    )
+
+    $(".poster-btn").on("click",function(){
+        let idx=$(this).index();
+        console.log(idx);
+        animater(idx);
+        
+    })
+
+    function animater(r) {
         let now = $(".poster:visible");
-        rank++;
-        if (rank > $(".poster").length - 1) {
-            rank = 0;
+        if(r==undefined){
+            rank++;
+            if (rank > $(".poster").length - 1) {
+                rank = 0;
+            }
+        }else{
+            rank=r;
         }
         let next = $(".poster").eq(rank);
-        console.log('now', now.data("id"));
-        console.log('next', next.data("id"));
+        // console.log('now', now.data("id"));
+        // console.log('next', next.data("id"));
 
         let ani = $(now).data("ani");
-        console.log(ani);
+        // console.log(ani);
 
         switch (ani) {
             case 1:
@@ -151,26 +176,28 @@
 </div>
 
 <script>
-    let p=0;
-    $(".left,.right").on("click",function(){
-        let arrow=$(this).attr("class");
-        
+    let p = 0;
+    $(".left,.right").on("click", function() {
+        let arrow = $(this).attr("class");
+
         switch (arrow) {
             case 'left':
-                if(p>0){
+                if (p > 0) {
                     p--;
                 }
-                
+
                 break;
             case 'right':
-                if(p<$(".poster-btn").length-4){
+                if (p < $(".poster-btn").length - 4) {
                     p++;
                 }
                 break;
 
         }
 
-        $(".poster-btn").animate({right:p*80},500);
-        
+        $(".poster-btn").animate({
+            right: p * 80
+        }, 500);
+
     })
 </script>
