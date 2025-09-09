@@ -2,6 +2,13 @@
 session_start();
 date_default_timezone_set("Asia/Taipei");
 
+$level = [
+    1 => '普遍級',
+    2 => '輔導級',
+    3 => '保護級',
+    4 => '限制級'
+];
+
 function dd($data)
 {
     echo "<pre>";
@@ -148,4 +155,5 @@ class DB
     }
 }
 
-$Posters=new DB("posters");
+$Posters = new DB("posters");
+$Movie = new DB("movie");
