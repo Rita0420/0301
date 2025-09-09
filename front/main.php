@@ -117,28 +117,28 @@
             clearInterval(slider);
         },
         function() {
-             slider = setInterval(() => {
+            slider = setInterval(() => {
                 animater();
             }, 2000)
         }
     )
 
-    $(".poster-btn").on("click",function(){
-        let idx=$(this).index();
+    $(".poster-btn").on("click", function() {
+        let idx = $(this).index();
         console.log(idx);
         animater(idx);
-        
+
     })
 
     function animater(r) {
         let now = $(".poster:visible");
-        if(r==undefined){
+        if (r == undefined) {
             rank++;
             if (rank > $(".poster").length - 1) {
                 rank = 0;
             }
-        }else{
-            rank=r;
+        } else {
+            rank = r;
         }
         let next = $(".poster").eq(rank);
         // console.log('now', now.data("id"));
@@ -162,20 +162,7 @@
                 break;
         }
     }
-</script>
-<div class="half">
-    <h1>院線片清單</h1>
-    <div class="rb tab" style="width:95%;">
-        <table>
-            <tbody>
-                <tr> </tr>
-            </tbody>
-        </table>
-        <div class="ct"> </div>
-    </div>
-</div>
 
-<script>
     let p = 0;
     $(".left,.right").on("click", function() {
         let arrow = $(this).attr("class");
@@ -200,4 +187,68 @@
         }, 500);
 
     })
+</script>
+
+<style>
+    .movie-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        height: 340px;
+    }
+
+    .movie {
+        width: 48%;
+        border: 1px solid #eee;
+        height: 150px;
+        margin-top: 5px;
+    }
+</style>
+<div class="half">
+    <h1>院線片清單</h1>
+    <div class="rb tab" style="width:95%;">
+        <div class="movie-list">
+            <?php
+            $today = date("Y-m-d");
+            $ondate = date("Y-m-d", strtotime("-2 days", strtotime($today)));
+
+            $div=4;
+            $all=count($Movie->all(['sh' => 1], " and ondate between '$ondate' and '$today'"));
+            $page=ceil($all/$div);
+            $now=$_GET['p']??'1';
+            $start=($now-1)*$div;
+
+            $movies = $Movie->all(['sh' => 1], " and ondate between '$ondate' and '$today' order by `rank` limit $start,$div");
+            foreach ($movies as $movie):
+            ?>
+                <div class="movie" style="display: flex;align-items:center">
+                    <div><img src="./images/<?= $movie['poster']; ?>" style="width: 80px;height:100px" alt=""></div>
+                    <div>
+                        <div><?= $movie['name']; ?></div>
+                        <div>分級: <img src="./icon/03C0<?= $movie['level']; ?>.png" height="15px" alt=""><?= $level[$movie['level']]; ?></div>
+                        <div>上映日期:<?= $movie['ondate']; ?></div>
+                        <div>
+                            <input type="button" value="劇情簡介" onclick="location.href='?do=intro&id=<?=$movie['id'];?>'">
+                            <input type="button" value="線上訂票" onclick="location.href='?do=order&id=<?=$movie['id'];?>'">
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="ct">
+            <?php if($now-1>0):?>
+                <a href="?p=<?=$now-1;?>"><</a>
+            <?php endif;?>
+            <?php for($i=1;$i<=$page;$i++):?>
+                <a href="?p=<?=$i;?>"><?=$i;?></a>
+            <?php endfor;?>
+            <?php if($now+1<=$page):?>
+                <a href="?p=<?=$now+1;?>">></a>
+            <?php endif;?>
+        </div>
+    </div>
+</div>
+
+<script>
+
 </script>
