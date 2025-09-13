@@ -206,7 +206,7 @@
 </style>
 <div class="half">
     <h1>院線片清單</h1>
-    <div class="rb tab" style="width:95%;">
+    <div class="rb tab" style="width:95%;font-size:12px;">
         <div class="movie-list">
             <?php
             $today = date("Y-m-d");
